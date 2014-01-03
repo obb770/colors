@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html manifest="manifest">
-	<head>
-		<meta name="viewport"
-			content="width=device-width, initial-scale=1.0, user-scalable=no" />
-		<meta name="apple-mobile-web-app-capable" content="yes" />
+    <head>
+        <meta name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style"
             content="black-translucent" />
-		<style type="text/css">
+        <style type="text/css">
 body {
     margin: 0;
-	overflow: hidden;
+    overflow: hidden;
 }
 #new {
-	display: none;
+    display: none;
 }
-		</style>
-		<title>Colors</title>
-	</head>
-	<body>
-		<img id="new" src="data:image/png;base64,
+        </style>
+        <title>Colors</title>
+    </head>
+    <body>
+        <img id="new" src="data:image/png;base64,
 iVBORw0KGgoAAAANSUhEUgAAAR8AAACnCAMAAAAfZ6jTAAAABGdBTUEAALGPC/xhBQAAAAFzUkdC
 AK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAD9QTFRF
 AAAA/////7ZmAABmtv////+2ZgAAAAA6kNv//9uQOgAAOpDbZrb/25A6AGa2ADqQ2///tmYA///b
@@ -50,180 +50,179 @@ wAd8wAd8wAcCPuADPuADPuADPuADPuADPuADPuADPuADPuADAR/wAR/wAR/wAR/wAR8I+IAP+IAP
 +IAP+IAPBHzAB3zAB3zAB3zAB3wg4AM+4AM+4AM+4AM+4AM+4PMQHwgE8hz5Dyf21Er+Pz/tAAAA
 JXRFWHRkYXRlOmNyZWF0ZQAyMDE0LTAxLTAzVDE5OjIyOjEwKzAyOjAw+FKyEgAAACV0RVh0ZGF0
 ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
-		<div id="canvas">
-			<canvas>
-			</canvas>
-		</div>
-		<script>
+        <div id="canvas">
+            <canvas>
+            </canvas>
+        </div>
+        <script>
 (function () {
-	'use strict';
-	var qs = function (q) {return document.querySelector(q);},
-		ctx = qs('canvas').getContext('2d'),
-		wait = 500,
-		drawSquare,
-		drawBoard,
-		newGame,
-		blink,
-		ignore = function (q) {console.log('ignored (' + q + ')');},
-		click,
-		play,
-		record,
-		start,
-		colors = ['yellow', 'red', 'rgb(0,255,0)', 'blue'],
-		list = [],
-		xside,
-		yside,
-		fsize,
-		stop = true;
+    'use strict';
+    var qs = function (q) {return document.querySelector(q);},
+        ctx = qs('canvas').getContext('2d'),
+        wait = 500,
+        drawSquare,
+        drawBoard,
+        newGame,
+        blink,
+        ignore = function (q) {console.log('ignored (' + q + ')');},
+        click,
+        play,
+        record,
+        start,
+        colors = ['yellow', 'red', 'rgb(0,255,0)', 'blue'],
+        list = [],
+        xside,
+        yside,
+        fsize,
+        stop = true;
 
-		drawSquare = function (q, color) {
-			var x = 0,
-				y = 0;
-			ctx.save()
-			ctx.fillStyle = color;
-			if (q === 1) {
-				x = xside;
-			}
-			else if (q === 2) {
-				y = yside;
-			}
-			else if (q === 3) {
-				x = xside;
-				y = yside;
-			}
-			ctx.fillRect(x, y, xside, yside);
-			ctx.restore();
-		};
+        drawSquare = function (q, color) {
+            var x = 0,
+                y = 0;
+            ctx.save()
+            ctx.fillStyle = color;
+            if (q === 1) {
+                x = xside;
+            }
+            else if (q === 2) {
+                y = yside;
+            }
+            else if (q === 3) {
+                x = xside;
+                y = yside;
+            }
+            ctx.fillRect(x, y, xside, yside);
+            ctx.restore();
+        };
 
-		drawBoard = function () {
-			var q;
-			for (q = 0; q < 4; q++) {
-				drawSquare(q, colors[q]);
-			}
-		};
+        drawBoard = function () {
+            var q;
+            for (q = 0; q < 4; q++) {
+                drawSquare(q, colors[q]);
+            }
+        };
 
-		newGame = function () {
-			var img = qs('#new'),
-				x,
-				y;
-			stop = true;
-			xside = Math.floor(window.innerWidth / 2);
-			yside = Math.floor(window.innerHeight / 2);
-			fsize = xside;
-			if (yside < fsize) {
-				fsize = yside;
-			}
-			qs('canvas').width = 2 * xside;
-			qs('canvas').height = 2 * yside;
+        newGame = function () {
+            var img = qs('#new'),
+                x,
+                y;
+            stop = true;
+            xside = Math.floor(window.innerWidth / 2);
+            yside = Math.floor(window.innerHeight / 2);
+            fsize = xside;
+            if (yside < fsize) {
+                fsize = yside;
+            }
+            qs('canvas').width = 2 * xside;
+            qs('canvas').height = 2 * yside;
 
-			x = Math.floor((2 * xside - img.width) / 2),
-			y = Math.floor((2 * yside - img.height) / 2);
-			drawBoard();
-			ctx.save()
-			ctx.drawImage(img, x, y);
-			ctx.restore()
-			click = start;
-		};
+            x = Math.floor((2 * xside - img.width) / 2),
+            y = Math.floor((2 * yside - img.height) / 2);
+            drawBoard();
+            ctx.save()
+            ctx.drawImage(img, x, y);
+            ctx.restore()
+            click = start;
+        };
 
-		blink = function (q, cont, timeout) {
-			if (typeof timeout === 'undefined' || timeout < 0) {
-				timeout = 2 * wait;
-			}
-			if (cont) {
-				setTimeout(cont, timeout);
-			}
-			if (stop) {
-				return;
-			}
-			drawSquare(q, 'rgba(0, 0, 0, 0.5)');
-			setTimeout(function () {
-				if (stop) {
-					return;
-				}
-				drawSquare(q, colors[q]);
-			}, wait);
-		};
+        blink = function (q, cont, timeout) {
+            if (typeof timeout === 'undefined' || timeout < 0) {
+                timeout = 2 * wait;
+            }
+            if (cont) {
+                setTimeout(cont, timeout);
+            }
+            if (stop) {
+                return;
+            }
+            drawSquare(q, 'rgba(0, 0, 0, 0.5)');
+            setTimeout(function () {
+                if (stop) {
+                    return;
+                }
+                drawSquare(q, colors[q]);
+            }, wait);
+        };
 
-		play = function () {
-			var i = -1,
-				repeat;
-			stop = false;
-			list.push(Math.floor(Math.random() * 4));
-			console.log(list);
-			repeat = function () {
-				i++;
-				if (i < list.length) {
-					blink(list[i], repeat, i === list.length - 1 ? 0 : -1);
-				}
-				else {
-					record();
-				}
-			};
-			repeat();
-		};
+        play = function () {
+            var i = -1,
+                repeat;
+            stop = false;
+            list.push(Math.floor(Math.random() * 4));
+            console.log(list);
+            repeat = function () {
+                i++;
+                if (i < list.length) {
+                    blink(list[i], repeat, i === list.length - 1 ? 0 : -1);
+                }
+                else {
+                    record();
+                }
+            };
+            repeat();
+        };
 
-		record = function () {
-			var guess = [];
-			click = function (q) {
-				guess.push(q);
-				console.log(guess);
-				if (q !== list[guess.length - 1]) {
-					click = ignore;
-					stop = true;
-					ctx.save();
- 					ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-					ctx.fillRect(0, 0, 2 * xside, 2 * yside);
-					ctx.restore();
-					ctx.save();
-					ctx.textBaseline = 'middle';
-					ctx.textAlign = 'center';
-					ctx.font = 'bold ' + fsize + 'px sans-serif';
-					ctx.fillText('' + (list.length - 1), xside, yside);
-					ctx.restore();
-					setTimeout(function () {click = newGame;}, 3 * wait);
-					return;
-				}
-				if (guess.length === list.length) {
-					click = ignore;
-					blink(q, function () {setTimeout(play, 2 * wait);});
-					return;
-				}
-				blink(q);
-			};
-		};
+        record = function () {
+            var guess = [];
+            click = function (q) {
+                guess.push(q);
+                console.log(guess);
+                if (q !== list[guess.length - 1]) {
+                    click = ignore;
+                    stop = true;
+                    ctx.save();
+                     ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                    ctx.fillRect(0, 0, 2 * xside, 2 * yside);
+                    ctx.restore();
+                    ctx.save();
+                    ctx.textBaseline = 'middle';
+                    ctx.textAlign = 'center';
+                    ctx.font = 'bold ' + fsize + 'px sans-serif';
+                    ctx.fillText('' + (list.length - 1), xside, yside);
+                    ctx.restore();
+                    setTimeout(function () {click = newGame;}, 3 * wait);
+                    return;
+                }
+                if (guess.length === list.length) {
+                    click = ignore;
+                    blink(q, function () {setTimeout(play, 2 * wait);});
+                    return;
+                }
+                blink(q);
+            };
+        };
 
-		qs('canvas').addEventListener('click', function (e) {
-			var q;
-			if (e.offsetX < xside) {
-				if (e.offsetY < yside) {
-					q = 0;
-				}
-				else {
-					q = 2;
-				}
-			}
-			else {
-				if (e.offsetY < yside) {
-					q = 1;
-				}
-				else {
-					q = 3;
-				}
-			}
-			click(q);
-		}, false);
+        qs('canvas').addEventListener('click', function (e) {
+            var q;
+            if (e.offsetX < xside) {
+                if (e.offsetY < yside) {
+                    q = 0;
+                }
+                else {
+                    q = 2;
+                }
+            }
+            else {
+                if (e.offsetY < yside) {
+                    q = 1;
+                }
+                else {
+                    q = 3;
+                }
+            }
+            click(q);
+        }, false);
 
-		start = function () {
-			var q;
-			list = [];
-			drawBoard();
-			setTimeout(play, wait);
-		};
+        start = function () {
+            var q;
+            list = [];
+            drawBoard();
+            setTimeout(play, wait);
+        };
 
-		window.addEventListener('load', newGame, false);
-		window.addEventListener('resize', newGame, false);
+        window.addEventListener('load', newGame, false);
+        window.addEventListener('resize', newGame, false);
 }());
-		</script>
-	
-
-</body></html>
+        </script>
+    </body>
+</html>
