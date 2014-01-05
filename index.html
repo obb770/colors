@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html manifest="manifest">
-    <head>
-        <meta name="viewport"
-            content="width=device-width, initial-scale=1.0, user-scalable=no" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style"
-            content="black-translucent" />
-        <style type="text/css">
+ <head>
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style"
+    content="black-translucent" />
+  <style type="text/css">
 body {
     margin: 0;
     overflow: hidden;
@@ -14,11 +14,11 @@ body {
 #new {
     display: none;
 }
-        </style>
-        <title>Colors</title>
-    </head>
-    <body>
-        <img id="new" src="data:image/png;base64,
+  </style>
+  <title>Colors</title>
+ </head>
+ <body>
+  <img id="new" src="data:image/png;base64,
 iVBORw0KGgoAAAANSUhEUgAAAR8AAACnCAMAAAAfZ6jTAAAABGdBTUEAALGPC/xhBQAAAAFzUkdC
 AK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAD9QTFRF
 AAAA/////7ZmAABmtv////+2ZgAAAAA6kNv//9uQOgAAOpDbZrb/25A6AGa2ADqQ2///tmYA///b
@@ -50,11 +50,10 @@ wAd8wAd8wAcCPuADPuADPuADPuADPuADPuADPuADPuADPuADAR/wAR/wAR/wAR/wAR8I+IAP+IAP
 +IAP+IAPBHzAB3zAB3zAB3zAB3wg4AM+4AM+4AM+4AM+4AM+4PMQHwgE8hz5Dyf21Er+Pz/tAAAA
 JXRFWHRkYXRlOmNyZWF0ZQAyMDE0LTAxLTAzVDE5OjIyOjEwKzAyOjAw+FKyEgAAACV0RVh0ZGF0
 ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
-        <div id="canvas">
-            <canvas>
-            </canvas>
-        </div>
-        <script>
+  <div id="canvas">
+   <canvas></canvas>
+  </div>
+  <script>
 (function () {
     'use strict';
     var qs = function (q) {return document.querySelector(q);},
@@ -223,6 +222,6 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
         window.addEventListener('load', newGame, false);
         window.addEventListener('resize', newGame, false);
 }());
-        </script>
-    </body>
+  </script>
+ </body>
 </html>
