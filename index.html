@@ -56,9 +56,9 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
   <script>
 (function () {
     'use strict';
-    var qs = function (q) {return document.querySelector(q);},
-        ctx = qs('canvas').getContext('2d'),
-        wait = 500,
+    var COLORS = ['yellow', 'red', 'rgb(0,255,0)', 'blue'],
+        WAIT = 500,
+        qs = function (q) {return document.querySelector(q);},
         drawSquare,
         drawBoard,
         newGame,
@@ -68,7 +68,7 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
         play,
         record,
         start,
-        colors = ['yellow', 'red', 'rgb(0,255,0)', 'blue'],
+        ctx = qs('canvas').getContext('2d'),
         list = [],
         xside,
         yside,
@@ -97,7 +97,7 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
         drawBoard = function () {
             var q;
             for (q = 0; q < 4; q++) {
-                drawSquare(q, colors[q]);
+                drawSquare(q, COLORS[q]);
             }
         };
 
@@ -126,7 +126,7 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
 
         blink = function (q, cont, timeout) {
             if (typeof timeout === 'undefined' || timeout < 0) {
-                timeout = 2 * wait;
+                timeout = 2 * WAIT;
             }
             if (cont) {
                 setTimeout(cont, timeout);
@@ -139,8 +139,8 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
                 if (stop) {
                     return;
                 }
-                drawSquare(q, colors[q]);
-            }, wait);
+                drawSquare(q, COLORS[q]);
+            }, WAIT);
         };
 
         play = function () {
@@ -170,7 +170,7 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
                     click = ignore;
                     stop = true;
                     ctx.save();
-                     ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
                     ctx.fillRect(0, 0, 2 * xside, 2 * yside);
                     ctx.restore();
                     ctx.save();
@@ -179,12 +179,12 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
                     ctx.font = 'bold ' + fsize + 'px sans-serif';
                     ctx.fillText('' + (list.length - 1), xside, yside);
                     ctx.restore();
-                    setTimeout(function () {click = newGame;}, 3 * wait);
+                    setTimeout(function () {click = newGame;}, 3 * WAIT);
                     return;
                 }
                 if (guess.length === list.length) {
                     click = ignore;
-                    blink(q, function () {setTimeout(play, 2 * wait);});
+                    blink(q, function () {setTimeout(play, 2 * WAIT);});
                     return;
                 }
                 blink(q);
@@ -193,8 +193,8 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
 
         qs('canvas').addEventListener('click', function (e) {
             var q;
-            if (e.offsetX < xside) {
-                if (e.offsetY < yside) {
+            if (e.clientX < xside) {
+                if (e.clientY < yside) {
                     q = 0;
                 }
                 else {
@@ -202,7 +202,7 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
                 }
             }
             else {
-                if (e.offsetY < yside) {
+                if (e.clientY < yside) {
                     q = 1;
                 }
                 else {
@@ -216,7 +216,7 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
             var q;
             list = [];
             drawBoard();
-            setTimeout(play, wait);
+            setTimeout(play, WAIT);
         };
 
         window.addEventListener('load', newGame, false);
