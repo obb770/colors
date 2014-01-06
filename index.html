@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html manifest="manifest">
+<html><!-- manifest="manifest"> -->
  <head>
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, user-scalable=no" />
@@ -68,6 +68,8 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
         play,
         record,
         start,
+        mouseDown,
+        touch,
         ctx = qs('canvas').getContext('2d'),
         list = [],
         xside,
@@ -191,27 +193,6 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
             };
         };
 
-        qs('canvas').addEventListener('click', function (e) {
-            var q;
-            if (e.clientX < xside) {
-                if (e.clientY < yside) {
-                    q = 0;
-                }
-                else {
-                    q = 2;
-                }
-            }
-            else {
-                if (e.clientY < yside) {
-                    q = 1;
-                }
-                else {
-                    q = 3;
-                }
-            }
-            click(q);
-        }, false);
-
         start = function () {
             var q;
             list = [];
@@ -219,7 +200,39 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
             setTimeout(play, WAIT);
         };
 
-        window.addEventListener('load', newGame, false);
+        mouseDown = function (e) {
+            var q;
+            if (e.clientY < yside) {
+                if (e.clientX < xside) {
+                    q = 0;
+                }
+                else {
+                    q = 1;
+                }
+            }
+            else {
+                if (e.clientX < xside) {
+                    q = 2;
+                }
+                else {
+                    q = 3;
+                }
+            }
+            click(q);
+        };
+
+        touch = function (event) {
+            event.preventDefault();
+            if (event.type === "touchstart") {
+                return mouseDown.call(this, event.changedTouches[0]);
+            }
+        }
+
+        window.addEventListener('load', function(e) {
+            qs('canvas').addEventListener('mousedown', mouseDown, false);
+            qs('canvas').addEventListener('touchstart', touch, false);
+            newGame();
+        }, false);
         window.addEventListener('resize', newGame, false);
 }());
   </script>
