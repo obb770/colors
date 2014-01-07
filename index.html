@@ -54,6 +54,7 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
    <canvas></canvas>
   </div>
   <script>
+/*jshint browser:true, devel:true */
 (function () {
     'use strict';
     var WAIT = 500,
@@ -80,9 +81,9 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
             this.color = color;
             this.x = x;
             this.y = y;
-        }
+        };
         Quad.prototype.drawSquare = function (color) {
-            ctx.save()
+            ctx.save();
             ctx.fillStyle = typeof color === 'undefined' ? this.color : color;
             ctx.fillRect(this.x, this.y, xside, yside);
             ctx.restore();
@@ -134,12 +135,12 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
             quads.push(new Quad('rgb(0, 255, 0)', 0, yside));
             quads.push(new Quad('blue', xside, yside));
 
-            x = Math.floor((2 * xside - img.width) / 2),
+            x = Math.floor((2 * xside - img.width) / 2);
             y = Math.floor((2 * yside - img.height) / 2);
             drawBoard();
-            ctx.save()
+            ctx.save();
             ctx.drawImage(img, x, y);
-            ctx.restore()
+            ctx.restore();
             click = start;
         };
 
@@ -193,7 +194,6 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
         };
 
         start = function () {
-            var q;
             list = [];
             drawBoard();
             setTimeout(play, WAIT);
@@ -225,9 +225,9 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
             if (event.type === "touchstart") {
                 return mouseDown.call(this, event.changedTouches[0]);
             }
-        }
+        };
 
-        window.addEventListener('load', function(e) {
+        window.addEventListener('load', function() {
             qs('canvas').addEventListener('mousedown', mouseDown, false);
             qs('canvas').addEventListener('touchstart', touch, false);
             newGame();
