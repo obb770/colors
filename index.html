@@ -66,8 +66,7 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
         play,
         record,
         ctx = qs('canvas').getContext('2d'),
-        game,
-        dummy;
+        game;
 
         Quad = function (color, x, y) {
             this.color = color;
@@ -86,16 +85,19 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
                 timeout = 2 * WAIT;
             }
             if (then) {
-                setTimeout(then, timeout);
+                later(then, timeout);
             }
             this.draw('rgba(0, 0, 0, 0.5)');
             later(function () {
                 thiz.draw();
-            }, WAIT);
+            }, WAIT, true);
         };
 
-        later = function (func, when) {
-            game.events.push(setTimeout(func, when));
+        later = function (func, when, clearable) {
+            var e = setTimeout(func, when);
+            if (clearable) {
+                game.events.push(e);
+            }
         };
 
         newGame = function () {
@@ -137,7 +139,7 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
             click = function () {
                 game.list = [];
                 drawBoard();
-                setTimeout(play, WAIT);
+                later(play, WAIT);
             };
         };
 
@@ -171,7 +173,7 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
                         break;
                     }
                     clearTimeout(e);
-                };
+                }
                 ctx.save();
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
                 ctx.fillRect(0, 0, 2 * game.xside, 2 * game.yside);
@@ -183,12 +185,11 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
                 ctx.fillText('' + (game.list.length - 1),
                     game.xside, game.yside);
                 ctx.restore();
-                setTimeout(function () {click = newGame;}, 3 * WAIT);
+                later(function () {click = newGame;}, 3 * WAIT);
             };
 
             click = function (q) {
-                var ignore = function (q) {console.log('ignored (' + q + ')');},
-                    e;
+                var ignore = function (q) {console.log('ignored (' + q + ')');};
                 guess.push(q);
                 console.log(guess);
                 if (q !== game.list[guess.length - 1]) {
@@ -199,7 +200,7 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
                 if (guess.length === game.list.length) {
                     click = ignore;
                     game.quads[q].blink(
-                        function () {setTimeout(play, 2 * WAIT);});
+                        function () {later(play, 2 * WAIT);});
                     return;
                 }
                 game.quads[q].blink();
