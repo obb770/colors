@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html><!-- manifest="manifest"> -->
+<html manifest="manifest">
  <head>
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, user-scalable=no" />
@@ -54,107 +54,103 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
    <canvas></canvas>
   </div>
   <script>
-/*jshint browser:true, devel:true */
+/*jshint browser:true */
 (function () {
     'use strict';
     var WAIT = 500,
         qs = function (q) {return document.querySelector(q);},
         Quad,
-        drawBoard,
         newGame,
-        ignore = function (q) {console.log('ignored (' + q + ')');},
         click,
+        later,
         play,
         record,
-        start,
-        mouseDown,
-        touch,
         ctx = qs('canvas').getContext('2d'),
-        quads = [],
-        list = [],
-        xside,
-        yside,
-        fsize,
-        stop = true;
+        game,
+        dummy;
 
         Quad = function (color, x, y) {
             this.color = color;
             this.x = x;
             this.y = y;
         };
-        Quad.prototype.drawSquare = function (color) {
+        Quad.prototype.draw = function (color) {
             ctx.save();
             ctx.fillStyle = typeof color === 'undefined' ? this.color : color;
-            ctx.fillRect(this.x, this.y, xside, yside);
+            ctx.fillRect(this.x, this.y, game.xside, game.yside);
             ctx.restore();
         };
-        Quad.prototype.blink = function (cont, timeout) {
+        Quad.prototype.blink = function (then, timeout) {
             var thiz = this;
             if (typeof timeout === 'undefined' || timeout < 0) {
                 timeout = 2 * WAIT;
             }
-            if (cont) {
-                setTimeout(cont, timeout);
+            if (then) {
+                setTimeout(then, timeout);
             }
-            if (stop) {
-                return;
-            }
-            this.drawSquare('rgba(0, 0, 0, 0.5)');
-            setTimeout(function () {
-                if (stop) {
-                    return;
-                }
-                thiz.drawSquare();
+            this.draw('rgba(0, 0, 0, 0.5)');
+            later(function () {
+                thiz.draw();
             }, WAIT);
         };
 
-        drawBoard = function () {
-            var q;
-            for (q = 0; q < 4; q++) {
-                quads[q].drawSquare();
-            }
+        later = function (func, when) {
+            game.events.push(setTimeout(func, when));
         };
 
         newGame = function () {
-            var img = qs('#new'),
+            var drawBoard,
+                img = qs('#new'),
                 x,
                 y;
-            stop = true;
-            xside = Math.floor(window.innerWidth / 2);
-            yside = Math.floor(window.innerHeight / 2);
-            fsize = xside;
-            if (yside < fsize) {
-                fsize = yside;
+
+            drawBoard = function () {
+                var q;
+                for (q = 0; q < 4; q++) {
+                    game.quads[q].draw();
+                }
+            };
+
+            game = {};
+            game.events = [];
+            game.xside = Math.floor(window.innerWidth / 2);
+            game.yside = Math.floor(window.innerHeight / 2);
+            game.fsize = game.xside;
+            if (game.yside < game.fsize) {
+                game.fsize = game.yside;
             }
-            qs('canvas').width = 2 * xside;
-            qs('canvas').height = 2 * yside;
+            qs('canvas').width = 2 * game.xside;
+            qs('canvas').height = 2 * game.yside;
 
-            quads = [];
-            quads.push(new Quad('yellow', 0, 0));
-            quads.push(new Quad('red', xside, 0));
-            quads.push(new Quad('rgb(0, 255, 0)', 0, yside));
-            quads.push(new Quad('blue', xside, yside));
+            game.quads = [];
+            game.quads.push(new Quad('yellow', 0, 0));
+            game.quads.push(new Quad('red', game.xside, 0));
+            game.quads.push(new Quad('rgb(0, 255, 0)', 0, game.yside));
+            game.quads.push(new Quad('blue', game.xside, game.yside));
 
-            x = Math.floor((2 * xside - img.width) / 2);
-            y = Math.floor((2 * yside - img.height) / 2);
+            x = Math.floor((2 * game.xside - img.width) / 2);
+            y = Math.floor((2 * game.yside - img.height) / 2);
             drawBoard();
             ctx.save();
             ctx.drawImage(img, x, y);
             ctx.restore();
-            click = start;
+            click = function () {
+                game.list = [];
+                drawBoard();
+                setTimeout(play, WAIT);
+            };
         };
 
         play = function () {
             var i = -1,
                 repeat;
-            stop = false;
-            list.push(Math.floor(Math.random() * 4));
-            console.log(list);
+            game.list.push(Math.floor(Math.random() * 4));
+            console.log(game.list);
             repeat = function () {
                 i++;
-                if (i < list.length) {
-                    quads[list[i]].blink(repeat,
-                        i === list.length - 1 ? 0 : -1);
+                if (i < game.list.length) {
+                    game.quads[game.list[i]].blink(repeat,
+                        i === game.list.length - 1 ? 0 : -1);
                 }
                 else {
                     record();
@@ -164,73 +160,70 @@ ZTptb2RpZnkAMjAxNC0wMS0wM1QxOToyMjoxMCswMjowMIkPCq4AAAAASUVORK5CYII=">
         };
 
         record = function () {
-            var guess = [];
+            var guess = [],
+                gameOver;
+
+            gameOver = function () {
+                var e;
+                while (true) {
+                    e = game.events.pop();
+                    if (typeof e === 'undefined') {
+                        break;
+                    }
+                    clearTimeout(e);
+                };
+                ctx.save();
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.fillRect(0, 0, 2 * game.xside, 2 * game.yside);
+                ctx.restore();
+                ctx.save();
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = 'center';
+                ctx.font = 'bold ' + game.fsize + 'px sans-serif';
+                ctx.fillText('' + (game.list.length - 1),
+                    game.xside, game.yside);
+                ctx.restore();
+                setTimeout(function () {click = newGame;}, 3 * WAIT);
+            };
+
             click = function (q) {
+                var ignore = function (q) {console.log('ignored (' + q + ')');},
+                    e;
                 guess.push(q);
                 console.log(guess);
-                if (q !== list[guess.length - 1]) {
+                if (q !== game.list[guess.length - 1]) {
                     click = ignore;
-                    stop = true;
-                    ctx.save();
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-                    ctx.fillRect(0, 0, 2 * xside, 2 * yside);
-                    ctx.restore();
-                    ctx.save();
-                    ctx.textBaseline = 'middle';
-                    ctx.textAlign = 'center';
-                    ctx.font = 'bold ' + fsize + 'px sans-serif';
-                    ctx.fillText('' + (list.length - 1), xside, yside);
-                    ctx.restore();
-                    setTimeout(function () {click = newGame;}, 3 * WAIT);
+                    gameOver();
                     return;
                 }
-                if (guess.length === list.length) {
+                if (guess.length === game.list.length) {
                     click = ignore;
-                    quads[q].blink(function () {setTimeout(play, 2 * WAIT);});
+                    game.quads[q].blink(
+                        function () {setTimeout(play, 2 * WAIT);});
                     return;
                 }
-                quads[q].blink();
+                game.quads[q].blink();
             };
         };
 
-        start = function () {
-            list = [];
-            drawBoard();
-            setTimeout(play, WAIT);
-        };
-
-        mouseDown = function (e) {
-            var q;
-            if (e.clientY < yside) {
-                if (e.clientX < xside) {
-                    q = 0;
-                }
-                else {
-                    q = 1;
-                }
-            }
-            else {
-                if (e.clientX < xside) {
-                    q = 2;
-                }
-                else {
-                    q = 3;
-                }
-            }
-            click(q);
-        };
-
-        touch = function (event) {
-            event.preventDefault();
-            if (event.type === "touchstart") {
-                return mouseDown.call(this, event.changedTouches[0]);
-            }
-        };
-
         window.addEventListener('load', function() {
-            qs('canvas').addEventListener('mousedown', mouseDown, false);
-            qs('canvas').addEventListener('touchstart', touch, false);
+            var mouseDown = function (e) {
+                var q = 0;
+                if (e.clientY >= game.yside) {
+                    q += 2;
+                }
+                if (e.clientX >= game.xside) {
+                    q += 1;
+                }
+                click(q);
+            };
+
             newGame();
+            qs('canvas').addEventListener('mousedown', mouseDown, false);
+            qs('canvas').addEventListener('touchstart', function (e) {
+                e.preventDefault();
+                return mouseDown.call(this, e.changedTouches[0]);
+            }, false);
         }, false);
         window.addEventListener('resize', newGame, false);
 }());
